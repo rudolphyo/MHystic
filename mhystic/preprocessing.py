@@ -1,6 +1,8 @@
 import math
 import pandas as pd
-from Bio import SeqIO
+import numpy as np
+from pandas import get_dummies
+from sklearn.cluster import KMeans
 
 def log_meas(affinity):
     """Logarithming according to article. y_i = 1-log(affinity)/log(50,000)
@@ -40,7 +42,7 @@ def select_hla(data):
                              data.iloc[hla_c], data.iloc[hla_e]], axis=0).reset_index(drop=True)
     alleles_abce.mhc = [i[:5] for i in alleles_abce.mhc]
     
-    return alleles_ABCE
+    return alleles_abce
 
 
 def to_one_hot(data, length):
@@ -62,4 +64,14 @@ def affinity_to_binary(affinity):
 
     affinity - Series with binding affinity to convert
     """
-    return pd.Series(map(lambda x: 1 if x >= 500 else 0, affinity)
+    return pd.Series(map(lambda x: 1 if x >= 500 else 0, affinity))
+
+def get_kMeans_features(data, k_range):
+    kMeans_meta_features = pd.DataFrame()
+
+    for i in k_range:
+        clr = KMeans(n_clusters=i, verbose=100, n_jobs=8)
+        clr.fit(data)
+        kMeans_meta_features[str(i)+"Means"] = clr.labels_
+    
+    return pd.get_dummies(kMeans_meta_features)

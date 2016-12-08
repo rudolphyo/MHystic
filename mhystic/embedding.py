@@ -5,6 +5,7 @@ import gensim
 from gensim.models.doc2vec import TaggedDocument
 from gensim.models import word2vec, Doc2Vec
 from functools import partial
+from Bio import SeqIO 
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 logging.root.level = 20
@@ -17,7 +18,7 @@ def fill_spaces(seq):
    
    seq - peptide sequence
    """ 
-    return seq.replace("", " ")[1: -1] 
+   return seq.replace("", " ")[1: -1] 
 
 def seq2vec(model, seq):
     """Performs embedding for peptide and return its vector representation
@@ -72,9 +73,9 @@ def train_seq2vec(data, func=fill_spaces, epochs=5, min_word_count = 10, num_wor
     :param ngram_size: int
     """
     if(isinstance(data, str)):
-        sequences_for_w2v = get_proteins_from_fasta(data, func)
+        sequences_for_w2v = get_proteins_for_embedding(data, func)
     else:
-        sequences_for_w2v = get_peptides_from_Bdata(data)
+        sequences = data
     
     print("Training model...")
     w2v_model = word2vec.Word2Vec(sequences_for_w2v, workers=num_workers, size = w2v_dim,
