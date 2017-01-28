@@ -5,7 +5,8 @@ import gensim
 from gensim.models.doc2vec import TaggedDocument
 from gensim.models import word2vec, Doc2Vec
 from functools import partial
-from Bio import SeqIO 
+from Bio import SeqIO
+import pandas as pd 
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 logging.root.level = 20
